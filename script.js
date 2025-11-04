@@ -71,8 +71,6 @@ function onFormSubmitHandler(e){
   setCustomFieldValue(confidenceLevelFieldId, cardId, apiToken, apiKey, apiUrl, customFieldsApiUrl, nivelConfidencialidade);
 }
 
-
-
 function createTrelloCard(apiListId, apiToken, apiKey, apiUrl, name, desc, idLabels) {
   const query = {
     'method': 'POST',
@@ -118,8 +116,6 @@ function createCardAttachment(cardId, apiToken, apiKey, apiUrl, file){
   }
 }
 
-
-
 function createCardChecklist(cardId, apiToken, apiKey, apiUrl, name){
   try{
     const apiCardChecklist = `${apiUrl}/${cardId}/checklists?key=${apiKey}&token=${apiToken}`;
@@ -163,8 +159,6 @@ function setCustomFieldValue(customFieldId, cardId, apiToken, apiKey, apiUrl, cu
   }
 }
 
-
-
 function getCustomFieldOptions(customFieldId, apiToken, apiKey, customFieldsApiUrl){
   try{
     const apiCustomFieldOptionsUrl = `${customFieldsApiUrl}/${customFieldId}/options?key=${apiKey}&token=${apiToken}`;
@@ -187,18 +181,17 @@ function getCustomFieldOptions(customFieldId, apiToken, apiKey, customFieldsApiU
   }
 }
 
-
-
 function getDriveFile(filePath){
+  console.log(`getDriveFile(${filePath})`);
   let file;
 
   try{
     const fileId = filePath.match(/id=([a-zA-Z0-9_-]+)/)[1];
 
-    const file = DriveApp.getFileById(fileId);
+    driveFile = DriveApp.getFileById(fileId);
 
-    const blob = file.getBlob();
-    const name = file.getName()
+    const blob = driveFile.getBlob();
+    const name = driveFile.getName()
     const type = blob.getContentType();
 
     file = {
