@@ -19,6 +19,12 @@ function simplifyText(text){
     .replaceAll(/[^a-z0-9\s-]/g, "");;
 }
 
+function formatDate(date){
+  const dateAtt = date.split("/");
+
+  return new Date(`${dateAtt[2]}-${dateAtt[1]}-${dateAtt[0]}T12:00:00`);
+}
+
 function fetchTrello(apiKey, apiToken, url, method, payload = {}) {
   let options = {
     'method': method,
