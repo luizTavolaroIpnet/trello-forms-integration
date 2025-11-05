@@ -70,7 +70,20 @@ function onFormSubmitHandler(e){
 
   filesPath.forEach((filePath) => {
     let driveFile = getDriveFile(filePath);
-    createCardAttachment(cardId, apiToken, apiKey, apiUrl, driveFile);
+    let payload;
+
+    if(!driveFile){
+      payload = {"url": filePath}
+    }
+    else{
+      payload = {
+        'name': file["name"],
+        'mimeType': file["type"],
+        'file': file["blob"]
+      }
+    }
+
+    createCardAttachment(cardId, apiToken, apiKey, apiUrl, payload);
   })
 
   createCardChecklist(cardId, apiToken, apiKey, apiUrl, "Checklist");
@@ -104,22 +117,14 @@ function createTrelloCard(apiListId, apiToken, apiKey, apiUrl, name, desc, due, 
   return responseData["id"];
 }
 
-function createCardAttachment(cardId, apiToken, apiKey, apiUrl, file){
-  Logger.log(`Adicionando arquivo ao card: ${file}`);
+function createCardAttachment(cardId, apiToken, apiKey, apiUrl, payload){
+  Logger.log(`Adicionando arquivo ao card: ${payload}`);
   try{
-    const fileBlob = file["blob"];
-    const fileName = file["name"];
-    const fileMimeType = file["type"];
-
     const apiCardAttachmentUrl = `${apiUrl}/${cardId}/attachments?key=${apiKey}&token=${apiToken}`
 
     const query = {
       'method': 'POST',
-      'payload': {
-        'name': fileName,
-        'mimeType': fileMimeType,
-        'file': fileBlob
-      }
+      'payload': payload
     };
 
     const response = UrlFetchApp.fetch(apiCardAttachmentUrl, query);
@@ -349,7 +354,7 @@ function buildLabels(trelloBoardLabels, labelsSelected){
       let idToAdd = trelloBoardLabels[labelKey] ?? trelloBoardLabels['outro'];
       labels.push(idToAdd)
     })
-    
+
     Logger.log(`Etiquetas restantes: ${labels}`);
     return labels.join(",");
   }
